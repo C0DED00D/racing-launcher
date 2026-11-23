@@ -1,22 +1,63 @@
+# ALLOWLIST: everything in this folder is private (ROMs, emulators, saves, personal config, notes, art, build tools)
+# unless it is listed below. To publish a new file or folder, add a "!" line for it here.
+
+/*
+!/.gitignore
+!/.gitattributes
+!/README.md
+!/LICENSE
+!/src/
+!/config/
+!/scripts/
+!/tools/
+!/art/
+!/emulators/
+!/games/
+
+# Build output anywhere.
 bin/
 obj/
 .vs/
 *.user
-# Your own setup and files: never committed.
-runtime/
-config/games.json
-config/emulators.json
-config/seats.json
-config/wheels.json
-config/boot-select.json
-art/*.png
-emulators/*
-!emulators/README.md
-games/*
-!games/README.md
-tools/*/x64/
-tools/*/x86/
-tools/wheelhub/
-tools/sdl2/
-tools/node/
-tools/mongodb/
+
+# src: the wheel hub lives in its own repo (github.com/C0DED00D/x360-wheel-ffb).
+/src/WheelHub/
+
+# config: examples and generic settings only; your real games/seats/emulators/wheels/boot files stay private.
+/config/*
+!/config/*.example.json
+!/config/atgames-mouse.json
+!/config/flycast-mappings/
+
+# scripts: generic tools only (the rest are game-specific or personal).
+/scripts/*
+!/scripts/drive.ps1
+!/scripts/padlog.ps1
+!/scripts/xinput-press.ps1
+!/scripts/xinput-axis.ps1
+!/scripts/tp-seat-names.ps1
+!/scripts/boot-select.cmd
+!/scripts/build-wheelhub.ps1
+!/scripts/pre-commit
+
+# tools: our helper DLL sources only (no downloads, build tools or built binaries).
+/tools/*
+!/tools/xinput-inject/
+!/tools/dinput-bg/
+!/tools/seat-names/
+/tools/*/x64/
+/tools/*/x86/
+/tools/**/*.dll
+/tools/**/*.obj
+/tools/**/*.lib
+/tools/**/*.exp
+/tools/**/*.pdb
+/tools/**/*.log
+
+# art, emulators, games: just the README that says what goes there.
+/art/*
+!/art/README.md
+/emulators/*
+!/emulators/README.md
+/games/*
+!/games/README.md

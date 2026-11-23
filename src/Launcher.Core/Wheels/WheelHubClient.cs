@@ -15,16 +15,11 @@ public static class WheelHubClient
     const string PipeName = "RacingWheelHub";
     const string MutexName = @"Local\RacingWheelHub";
 
-    /// <summary>The hub exe: tools\wheelhub\WheelHub.exe (published there by x360-wheel-ffb's scripts\publish.ps1), else
-    /// the newest build under src\WheelHub\bin (an older in-tree copy, if present).</summary>
+    /// <summary>The hub exe: tools\wheelhub\WheelHub.exe, published there from x360-wheel-ffb by scripts\build-wheelhub.ps1.</summary>
     public static string? FindExe(LauncherConfig config)
     {
         var published = config.Resolve(@"tools\wheelhub\WheelHub.exe");
-        if (File.Exists(published)) return published;
-        var bin = config.Resolve(@"src\WheelHub\bin");
-        if (!Directory.Exists(bin)) return null;
-        return Directory.EnumerateFiles(bin, "WheelHub.exe", SearchOption.AllDirectories)
-            .OrderByDescending(File.GetLastWriteTimeUtc).FirstOrDefault();
+        return File.Exists(published) ? published : null;
     }
 
     public static bool IsRunning()

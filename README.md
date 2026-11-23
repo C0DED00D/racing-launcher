@@ -183,6 +183,16 @@ Optional: `tools\sdl2\SDL2.dll` (x64) lets the Flycast runner list SDL joysticks
   `%APPDATA%` can be virtualised into the package's folder, and settings made that way won't be seen when the
   launcher starts normally.
 
+## Your own files stay out of git
+
+The `.gitignore` is an allowlist: everything in the folder is ignored unless it's listed there, so your game files,
+emulators, saves, configs (`config/*.json`) and art stay local however you lay them out. As a second guard, install
+the pre-commit hook, which refuses ROM/disc-image types, binaries, files over 1 MB and the private folders:
+
+```powershell
+Copy-Item scripts\pre-commit .git\hooks\pre-commit
+```
+
 ## License
 
 MIT, see [LICENSE](LICENSE). Emulators, games and other third-party software keep their own licenses and aren't

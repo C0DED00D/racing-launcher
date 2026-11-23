@@ -1,0 +1,27 @@
+#!/bin/sh
+# Refuses commits that would publish game files, emulators, personal data or binaries.
+# Install (once per clone):  copy scripts\pre-commit .git\hooks\pre-commit
+# Bypass only if you are sure:  git commit --no-verify
+bad=0
+max=1048576
+for f in $(git diff --cached --name-only --diff-filter=AM); do
+  case "$f" in
+    art/README.md|emulators/README.md|games/README.md) ;;
+    art/*|emulators/*|games/*|runtime/*|build/*|new_roms/*|wheel/*|docs/*|src/WheelHub/*)
+      echo "pre-commit: private folder: $f"; bad=1; continue ;;
+    CLAUDE.md|NOTES.md|DESIGN.md|TODO.md|config/games.json|config/seats.json|config/emulators.json|config/wheels.json|config/boot-select.json)
+      echo "pre-commit: private file: $f"; bad=1; continue ;;
+  esac
+  lower=$(printf '%s' "$f" | tr 'A-Z' 'a-z')
+  case "$lower" in
+    *.zip|*.7z|*.rar|*.chd|*.iso|*.gdi|*.cdi|*.cue|*.bin|*.img|*.xex|*.xbe|*.xiso|*.nv|*.nvmem|*.dat|*.eeprom|*.sav|*.qcow2|*.rom|*.exe|*.dll|*.lib|*.obj|*.pdb|*.png|*.jpg|*.jpeg)
+      echo "pre-commit: file type not allowed: $f"; bad=1; continue ;;
+  esac
+  size=$(git cat-file -s ":$f" 2>/dev/null || echo 0)
+  if [ "$size" -gt "$max" ]; then echo "pre-commit: larger than 1 MB: $f"; bad=1; fi
+done
+if [ $bad -ne 0 ]; then
+  echo "pre-commit: commit refused. Unstage those files (git restore --staged <file>)."
+  exit 1
+fi
+exit 0
