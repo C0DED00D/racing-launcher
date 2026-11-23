@@ -1,0 +1,27 @@
+{
+  // Copy to config/seats.json. A seat is one wheel plus one monitor. Seat 1 always uses the primary monitor.
+  //
+  // devMode: with only one monitor, two-player games tile both seats side by side on it.
+  // Per seat:
+  //   xinputSlot  the seat's controller number, 0-based (its place among the DirectInput wheels).
+  //   joystick    part of the seat's wheel's device path or name, for games that pick a device by it.
+  //               vJoy devices from the wheel hub (github.com/C0DED00D/x360-wheel-ffb): "col01" / "col02".
+  //               A retail wheel: part of its name, or of its USB path ("vid_046d&pid_c266") if both seats match.
+  //   monitor     "primary" or "secondary".
+  //   audio       part of the seat's audio output name in Windows Sound settings; that seat's game plays there.
+  //               Omit for the system default.
+  //   twinStick   optional: part of a twin stick's device path, for games with "controller": "twinStick".
+  //   wheel       optional: this seat's wheel layout, when it isn't the vJoy layout in "joystick" below
+  //               (same fields, plus "range" in degrees, "axes", "vendorId"/"productId", SDL GUIDs and name).
+  "devMode": true,
+  "seats": [
+    { "id": 1, "xinputSlot": 0, "joystick": "col01", "monitor": "primary" },
+    { "id": 2, "xinputSlot": 1, "joystick": "col02", "monitor": "secondary" }
+  ],
+  // How the launcher menu and the game mappings read a DirectInput wheel. Button numbers are 1-based, as Windows'
+  // controller settings show them. These are the wheel hub's vJoy layout. gasAxis/brakeAxis: Y Z R U V (or Rz, Slider0).
+  "joystick": {
+    "a": 1, "b": 2, "x": 3, "y": 4, "leftShoulder": 5, "rightShoulder": 6, "back": 7, "start": 8, "guide": 11,
+    "gasAxis": "Y", "brakeAxis": "Z", "pedalsReversed": false
+  }
+}

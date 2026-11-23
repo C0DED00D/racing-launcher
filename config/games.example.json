@@ -1,0 +1,135 @@
+{
+  // Copy to config/games.json and replace the placeholders with your own games.
+  // Each entry is one tile in the menu, in this order. Paths are relative to the launcher folder.
+  //
+  // Common fields:
+  //   id         unique, lower case; also the tile art file name (art/<id>.png, 900x1200, optional)
+  //   title, subtitle, color (tile colour when there's no art)
+  //   runner     supermodel | flycast | vcthunder | xenia | xemu | teknoparrot | daytona-recomp | exe | steam
+  //   rom        the game file or folder the runner needs (you supply it; nothing is included)
+  //   modes      Solo (one copy on seat 1's screen) and/or Linked (one networked copy per seat, each on its own screen)
+  //   args       extra command-line arguments for the emulator
+  //   env        extra environment variables
+  //   emulator   which config/emulators.json entry to use, when a runner has more than one build
+  //   modeHints  { "Linked": "..." }: a line shown in the menu footer for that mode
+  //   wheelRange steering rotation in degrees (Logitech wheels; default from seats.json)
+  //   controller "twinStick" = the seat's twin stick instead of the wheel
+  //   ffb        { "strength": 1.0, "invert": false, "rumble": "steer" } sent to the wheel hub
+  "games": [
+    {
+      // Sega Model 3 (Supermodel). rom = the MAME set name zip. Linked = Supermodel's net board, one copy per seat.
+      "id": "model3-example",
+      "title": "Model 3 game",
+      "subtitle": "Sega Model 3",
+      "runner": "supermodel",
+      "rom": "emulators/supermodel/ROMs/SETNAME.zip",
+      "modes": [ "Solo", "Linked" ],
+      "args": [ "-wide-screen" ],
+      "color": "#F77F00"
+    },
+    {
+      // Sega Model 2 on the newer Supermodel build with Model 2 support.
+      "id": "model2-example",
+      "title": "Model 2 game",
+      "subtitle": "Sega Model 2",
+      "runner": "supermodel",
+      "emulator": "supermodel-m2",
+      "rom": "games/model2/SETNAME.zip",
+      "modes": [ "Solo", "Linked" ],
+      "args": [ "-wide-screen" ],
+      "color": "#D62828"
+    },
+    {
+      // NAOMI (Flycast). Flycast identifies NAOMI games by the MAME set name, so keep the zip's name.
+      // Needs the NAOMI BIOS as emulators/flycast/data/naomi.zip.
+      "id": "naomi-example",
+      "title": "NAOMI game",
+      "subtitle": "Sega NAOMI",
+      "runner": "flycast",
+      "rom": "games/SETNAME.zip",
+      "modes": [ "Solo", "Linked" ],
+      "color": "#FCBF49"
+    },
+    {
+      // Dreamcast disc image (Flycast): .gdi, .chd or .cdi.
+      "id": "dreamcast-example",
+      "title": "Dreamcast game",
+      "subtitle": "Dreamcast",
+      "runner": "flycast",
+      "rom": "games/DISC/DISC.gdi",
+      "modes": [ "Solo" ],
+      "color": "#E9C46A"
+    },
+    {
+      // Midway Vegas hardware through VCThunder. rom = the game's CHD; VCThunder imports it into its data folder.
+      "id": "vegas-example",
+      "title": "VCThunder game",
+      "subtitle": "Midway",
+      "runner": "vcthunder",
+      "rom": "emulators/vcthunder/GAME.chd",
+      "modes": [ "Solo", "Linked" ],
+      "color": "#0077B6"
+    },
+    {
+      // Xbox 360 (Xenia Canary netplay). rom = a disc image or an installed package's path.
+      // profiles: Xenia profile XUIDs to sign in (Solo); linkProfiles: Live-enabled profiles, one per seat (Linked).
+      // Linked runs one patched Xenia per seat ("xenia-link" in emulators.json) through a local Xenia Web Services
+      // server (Node + MongoDB in tools/), so nothing goes online.
+      "id": "xbox360-example",
+      "title": "Xbox 360 game",
+      "subtitle": "Xbox 360",
+      "runner": "xenia",
+      "rom": "games/DISC.iso",
+      "modes": [ "Solo" ],
+      "profiles": [ "XUID_PLAYER1" ],
+      "color": "#00B4D8"
+    },
+    {
+      // Original Xbox (xemu). rom = an XISO. xemu needs your own MCPX boot ROM, flash BIOS and HDD image in
+      // emulators/xemu/bios/ (see xemu's "Required files" guide).
+      "id": "xbox-example",
+      "title": "Xbox game",
+      "subtitle": "Xbox",
+      "runner": "xemu",
+      "rom": "games/DISC.iso",
+      "modes": [ "Solo" ],
+      "color": "#F4A261"
+    },
+    {
+      // TeknoParrot. rom = the unpacked game folder; tpProfile = TeknoParrot's GameProfiles name (without .xml).
+      // windowProcess = the game's own process, when TeknoParrot starts it as a child (for window placement).
+      "id": "teknoparrot-example",
+      "title": "TeknoParrot game",
+      "subtitle": "PC-based arcade",
+      "runner": "teknoparrot",
+      "rom": "games/GAMEFOLDER",
+      "tpProfile": "PROFILE",
+      "modes": [ "Solo" ],
+      "color": "#2A9D8F"
+    },
+    {
+      // Any Windows program: a native port, another emulator, a PC game.
+      "id": "exe-example",
+      "title": "Windows program",
+      "subtitle": "Native",
+      "runner": "exe",
+      "exe": "emulators/PROGRAM/PROGRAM.exe",
+      "args": [],
+      "modes": [ "Solo" ],
+      "color": "#9B2226"
+    },
+    {
+      // A Steam game: steam.exe -applaunch <steamAppId> (the number in its store page URL), then the launcher adopts
+      // the game's process by its exe name. Set the game itself to fullscreen on seat 1's screen.
+      "id": "steam-example",
+      "title": "Steam game",
+      "subtitle": "Steam",
+      "runner": "steam",
+      "steamAppId": 0,
+      "exe": "GAME.exe",
+      "wheelRange": 900,
+      "modes": [ "Solo" ],
+      "color": "#1E88E5"
+    }
+  ]
+}

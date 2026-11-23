@@ -1,0 +1,17 @@
+{
+  // Copy to config/boot-select.json. BootSelect (src/BootSelect, run at logon) waits until the PRIMARY display's
+  // resolution has matched one profile for stableChecks polls in a row, runs that profile's programs and exits.
+  // "run": paths relative to the launcher folder, absolute paths, or URLs such as steam://rungameid/<app id>.
+  // timeoutMinutes 0 = wait forever.
+  "pollSeconds": 2,
+  "stableChecks": 3,
+  "timeoutMinutes": 0,
+  "profiles": [
+    {
+      "name": "racing",
+      "width": 3840,
+      "height": 2160,
+      "run": [ "src\\Launcher.App\\bin\\Release\\net10.0-windows\\RacingLauncher.exe" ]
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  // Copy to config/emulators.json. Where each emulator or port lives, relative to the launcher folder.
+  // Download each one yourself from its official release page ("url") and check its published checksum.
+  // "version" is only a note for you; these are the builds the launcher was tested with.
+  // An entry whose exe is missing makes its games show SETUP NEEDED.
+  "emulators": {
+    "supermodel": {
+      // Sega Model 3. Portable: Config/Supermodel.ini and NVRAM/ beside the exe.
+      "path": "emulators/supermodel/supermodel.exe",
+      "version": "0.3a-20261029-git-036af1c",
+      "url": "https://github.com/trzy/Supermodel/releases"
+    },
+    "supermodel-m2": {
+      // A newer Supermodel build with Sega Model 2 support, kept apart from the Model 3 build above.
+      // Games use it with "emulator": "supermodel-m2".
+      "path": "emulators/supermodel-m2/supermodel.exe",
+      "version": "0.4-20261116-git-0b82a98",
+      "url": "https://github.com/trzy/Supermodel/releases"
+    },
+    "daytona-recomp": {
+      // Native port, built from source with your own ROM set (see its README).
+      "path": "emulators/daytona-recomp/build-daytona/Release/daytona.exe",
+      "version": "source f32c48f",
+      "url": "https://github.com/alphanu1/daytona-arcade-recomp"
+    },
+    "flycast": {
+      // Dreamcast / NAOMI. Portable: emu.cfg, mappings/ and data/ beside the exe.
+      "path": "emulators/flycast/flycast.exe",
+      "version": "2.7",
+      "url": "https://github.com/flyinghead/flycast/releases"
+    },
+    "vcthunder": {
+      "path": "emulators/vcthunder/VCThunder.exe",
+      "version": "0.4",
+      "url": "https://github.com/mourix/VCThunder/releases"
+    },
+    "xenia": {
+      // Xbox 360. Put an empty portable.txt beside the exe so it keeps its files there.
+      "path": "emulators/xenia/xenia_canary_netplay.exe",
+      "version": "netplay v6.0.0",
+      "url": "https://github.com/AdrianCassar/xenia-canary/releases"
+    },
+    "xenia-link": {
+      // Linked mode only: a Xenia netplay build with extra options (netplay_local_ip, xinput_slot_offset,
+      // sdl_joystick_match, ffb_device, gpu_scheduling_priority) so two copies can run and link on one PC.
+      // Those patches aren't published yet; without this build, Xenia games are Solo only.
+      "path": "emulators/xenia-link/xenia_canary_netplay.exe",
+      "version": "netplay_canary_experimental f0f15af + patches",
+      "url": "https://github.com/AdrianCassar/xenia-canary"
+    },
+    "xemu": {
+      // Original Xbox. Portable: xemu.toml beside the exe. Needs your own Xbox files in bios/.
+      "path": "emulators/xemu/xemu.exe",
+      "version": "v0.8.139",
+      "url": "https://github.com/xemu-project/xemu/releases"
+    },
+    "teknoparrot": {
+      // Open TeknoParrotUi.exe once to accept its policies and let it fetch the components your games need.
+      "path": "emulators/teknoparrot/TeknoParrotUi.exe",
+      "version": "TeknoParrotUi 1.0.0.2276",
+      "url": "https://github.com/teknogods/TeknoParrot/releases"
+    }
+  }
+}

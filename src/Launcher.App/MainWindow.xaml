@@ -1,0 +1,258 @@
+<Window x:Class="Launcher.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Launcher.App"
+        Title="Racing Launcher"
+        WindowStyle="None" ResizeMode="NoResize" WindowState="Maximized"
+        Background="#0B0D12" Foreground="{StaticResource Ink}"
+        FontFamily="{StaticResource DisplayFont}"
+        UseLayoutRounding="True" Cursor="Arrow" Focusable="True"
+        FocusVisualStyle="{x:Null}" KeyboardNavigation.DirectionalNavigation="None">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
+        <DataTemplate x:Key="TileTemplate" DataType="{x:Type local:GameTile}">
+            <Grid x:Name="Root" Width="300" Height="400" Margin="18,0"
+                  RenderTransformOrigin="0.5,0.5" Cursor="Hand"
+                  MouseLeftButtonUp="Tile_MouseLeftButtonUp" Tag="{Binding}">
+                <Grid.RenderTransform>
+                    <ScaleTransform x:Name="Scale" ScaleX="0.9" ScaleY="0.9"/>
+                </Grid.RenderTransform>
+
+                <!-- Glow behind the selected tile -->
+                <Border x:Name="Glow" CornerRadius="22" Margin="-6" Opacity="0">
+                    <Border.Background>
+                        <SolidColorBrush Color="{Binding AccentColor}"/>
+                    </Border.Background>
+                    <Border.Effect>
+                        <BlurEffect Radius="28"/>
+                    </Border.Effect>
+                </Border>
+
+                <Border x:Name="Card" CornerRadius="18" ClipToBounds="True" Background="{Binding TileBrush}"
+                        BorderThickness="3" BorderBrush="#33FFFFFF">
+                    <Grid>
+                        <!-- Optional artwork from art/<id>.png. Drawn as a Border background, not an Image: ClipToBounds
+                             clips to a plain rectangle, so an Image's square corners showed past the rounded card.
+                             CornerRadius 15 = the card's 18 minus its 3 px border. -->
+                        <Border CornerRadius="15" Visibility="{Binding HasArt, Converter={StaticResource BoolToVis}}">
+                            <Border.Background>
+                                <ImageBrush ImageSource="{Binding Art}" Stretch="UniformToFill"/>
+                            </Border.Background>
+                        </Border>
+
+                        <!-- Racing stripes, drawn when there's no artwork -->
+                        <Canvas x:Name="Stripes" ClipToBounds="True" IsHitTestVisible="False">
+                            <Rectangle Canvas.Left="150" Canvas.Top="-60" Width="34" Height="560" Fill="#26FFFFFF">
+                                <Rectangle.RenderTransform><RotateTransform Angle="22"/></Rectangle.RenderTransform>
+                            </Rectangle>
+                            <Rectangle Canvas.Left="200" Canvas.Top="-60" Width="14" Height="560" Fill="#1AFFFFFF">
+                                <Rectangle.RenderTransform><RotateTransform Angle="22"/></Rectangle.RenderTransform>
+                            </Rectangle>
+                        </Canvas>
+
+                        <!-- Shade so the title stays readable (rounded too, or its dark bottom corners stick out) -->
+                        <Border CornerRadius="15">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <GradientStop Color="#00000000" Offset="0.4"/>
+                                    <GradientStop Color="#CC000000" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                        </Border>
+
+                        <StackPanel VerticalAlignment="Bottom" Margin="22,0,22,22">
+                            <TextBlock Text="{Binding Title}" FontSize="34" FontWeight="Bold" TextWrapping="Wrap"
+                                       LineHeight="36" LineStackingStrategy="BlockLineHeight"/>
+                            <TextBlock Text="{Binding Subtitle}" FontSize="16" Margin="0,6,0,0" Opacity="0.8"/>
+                        </StackPanel>
+
+                        <Border x:Name="BadgeBox" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,16,16,0"
+                                Background="#CC000000" CornerRadius="6" Padding="10,4">
+                            <TextBlock Text="{Binding Badge}" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource Accent}"/>
+                        </Border>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding Badge}" Value="">
+                    <Setter TargetName="BadgeBox" Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding HasArt}" Value="True">
+                    <Setter TargetName="Stripes" Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding State}" Value="ComingSoon">
+                    <Setter TargetName="Card" Property="Opacity" Value="0.55"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                    <Setter TargetName="Card" Property="BorderBrush" Value="{StaticResource Accent}"/>
+                    <DataTrigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="Scale" Storyboard.TargetProperty="ScaleX" To="1.08" Duration="0:0:0.18"/>
+                                <DoubleAnimation Storyboard.TargetName="Scale" Storyboard.TargetProperty="ScaleY" To="1.08" Duration="0:0:0.18"/>
+                                <DoubleAnimation Storyboard.TargetName="Glow" Storyboard.TargetProperty="Opacity" To="0.55" Duration="0:0:0.18"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.EnterActions>
+                    <DataTrigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="Scale" Storyboard.TargetProperty="ScaleX" To="0.9" Duration="0:0:0.18"/>
+                                <DoubleAnimation Storyboard.TargetName="Scale" Storyboard.TargetProperty="ScaleY" To="0.9" Duration="0:0:0.18"/>
+                                <DoubleAnimation Storyboard.TargetName="Glow" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.18"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.ExitActions>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+    </Window.Resources>
+
+    <Grid>
+        <!-- Background tinted by the selected game's colour -->
+        <Rectangle>
+            <Rectangle.Fill>
+                <RadialGradientBrush Center="0.5,0.45" GradientOrigin="0.5,0.45" RadiusX="0.75" RadiusY="0.8">
+                    <GradientStop x:Name="BgTint" Color="#40D62828" Offset="0"/>
+                    <GradientStop Color="#000B0D12" Offset="1"/>
+                </RadialGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+
+        <Grid Margin="64,40,64,32">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header: name and connected controllers -->
+            <DockPanel Grid.Row="0">
+                <!-- Quit / power menu: click it, or D-pad up from the top mode to highlight it, then A/Start
+                     (quit, hibernate or shut down). Esc twice and Alt+F4 also quit. -->
+                <Border x:Name="QuitButton" DockPanel.Dock="Right" VerticalAlignment="Center" Margin="18,0,0,0" Padding="18,6"
+                        CornerRadius="14" Background="#33FF5A4F" Cursor="Hand" ToolTip="Quit the launcher, hibernate or shut down"
+                        BorderThickness="2" BorderBrush="Transparent"
+                        MouseLeftButtonUp="Quit_MouseLeftButtonUp">
+                    <TextBlock Text="QUIT" FontSize="15" FontWeight="SemiBold" Foreground="{StaticResource Ink}"/>
+                </Border>
+                <ItemsControl x:Name="PadList" DockPanel.Dock="Right" VerticalAlignment="Center">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate><StackPanel Orientation="Horizontal"/></ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="#1FFFFFFF" CornerRadius="14" Padding="14,6" Margin="10,0,0,0">
+                                <TextBlock Text="{Binding}" FontSize="15" Foreground="{StaticResource Ink}"/>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <TextBlock Text="RACING" FontSize="28" FontWeight="Bold" Foreground="{StaticResource Accent}" VerticalAlignment="Center"/>
+            </DockPanel>
+
+            <!-- Tile carousel, slid so the selected tile sits in the centre -->
+            <!-- A Canvas lets the row of tiles be wider than the screen without being clipped. -->
+            <Canvas x:Name="CarouselHost" Grid.Row="1" ClipToBounds="False" Background="Transparent" Margin="-64,0">
+                <ItemsControl x:Name="Carousel" ItemTemplate="{StaticResource TileTemplate}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate><StackPanel Orientation="Horizontal"/></ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.RenderTransform>
+                        <TranslateTransform x:Name="CarouselShift"/>
+                    </ItemsControl.RenderTransform>
+                </ItemsControl>
+            </Canvas>
+
+            <!-- Selected game details and mode picker -->
+            <StackPanel Grid.Row="2" Margin="0,8,0,0" HorizontalAlignment="Center">
+                <TextBlock x:Name="DetailTitle" FontSize="44" FontWeight="Bold" HorizontalAlignment="Center"/>
+                <TextBlock x:Name="DetailStatus" FontSize="18" Foreground="{StaticResource InkDim}" HorizontalAlignment="Center"
+                           Margin="0,4,0,14" TextTrimming="CharacterEllipsis" MaxWidth="1200"/>
+                <ItemsControl x:Name="ModeList" HorizontalAlignment="Center">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate><StackPanel Orientation="Horizontal"/></ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type local:ModeChip}">
+                            <Border x:Name="Chip" CornerRadius="20" Padding="22,9" Margin="8,0" Cursor="Hand"
+                                    Background="#1FFFFFFF" BorderThickness="2" BorderBrush="Transparent"
+                                    MouseLeftButtonUp="Mode_MouseLeftButtonUp" Tag="{Binding Mode}">
+                                <TextBlock x:Name="ChipText" Text="{Binding Label}" FontSize="17" FontWeight="SemiBold"/>
+                            </Border>
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                    <Setter TargetName="Chip" Property="Background" Value="{StaticResource Accent}"/>
+                                    <Setter TargetName="ChipText" Property="Foreground" Value="#111111"/>
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+            <!-- Footer: control hints and status messages -->
+            <Grid Grid.Row="3" Margin="0,28,0,0">
+                <TextBlock x:Name="Hints" FontSize="16" Foreground="{StaticResource InkDim}" HorizontalAlignment="Center"
+                           Text="STEER / ◀ ▶  choose game     D-PAD ▲▼  mode / quit     GAS / A / TRIGGER / ENTER  start     GUIDE ×2 or hold START 3 s  back to menu"/>
+                <!-- How to start the picked mode in the game (games.json "modeHints"); replaces the line above -->
+                <TextBlock x:Name="ModeHint" FontSize="18" Foreground="{StaticResource Accent}" HorizontalAlignment="Center"
+                           TextAlignment="Center" TextTrimming="CharacterEllipsis" Visibility="Collapsed"/>
+                <Border x:Name="StatusBox" HorizontalAlignment="Center" VerticalAlignment="Bottom" CornerRadius="10"
+                        Padding="20,10" Background="#E6181C24" Opacity="0" IsHitTestVisible="False">
+                    <TextBlock x:Name="StatusText" FontSize="18" TextWrapping="Wrap" MaxWidth="1300"/>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <!-- Quit / power menu (wheel/pad/keyboard/mouse). CANCEL is picked by default. Tag = the choice. -->
+        <Grid x:Name="QuitConfirm" Background="#F70B0D12" Visibility="Collapsed">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock Text="Quit or power off?" FontSize="52" FontWeight="Bold" HorizontalAlignment="Center"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,36,0,0">
+                    <Border x:Name="QuitOptCancel" Tag="Cancel" CornerRadius="20" Padding="40,12" Margin="14,0" Cursor="Hand"
+                            Background="#1FFFFFFF" BorderThickness="3" BorderBrush="Transparent"
+                            MouseLeftButtonUp="QuitOption_MouseLeftButtonUp">
+                        <TextBlock Text="CANCEL" FontSize="24" FontWeight="SemiBold"/>
+                    </Border>
+                    <Border x:Name="QuitOptQuit" Tag="Quit" CornerRadius="20" Padding="40,12" Margin="14,0" Cursor="Hand"
+                            Background="#1FFFFFFF" BorderThickness="3" BorderBrush="Transparent"
+                            MouseLeftButtonUp="QuitOption_MouseLeftButtonUp">
+                        <TextBlock Text="QUIT LAUNCHER" FontSize="24" FontWeight="SemiBold"/>
+                    </Border>
+                    <Border x:Name="QuitOptHibernate" Tag="Hibernate" CornerRadius="20" Padding="40,12" Margin="14,0" Cursor="Hand"
+                            Background="#1FFFFFFF" BorderThickness="3" BorderBrush="Transparent"
+                            MouseLeftButtonUp="QuitOption_MouseLeftButtonUp">
+                        <TextBlock Text="HIBERNATE PC" FontSize="24" FontWeight="SemiBold"/>
+                    </Border>
+                    <Border x:Name="QuitOptShutDown" Tag="ShutDown" CornerRadius="20" Padding="40,12" Margin="14,0" Cursor="Hand"
+                            Background="#1FFFFFFF" BorderThickness="3" BorderBrush="Transparent"
+                            MouseLeftButtonUp="QuitOption_MouseLeftButtonUp">
+                        <TextBlock Text="SHUT DOWN PC" FontSize="24" FontWeight="SemiBold"/>
+                    </Border>
+                </StackPanel>
+                <TextBlock Text="STEER / ◀ ▶  choose     A / START / ENTER  confirm     B / ESC  back" FontSize="18"
+                           Foreground="{StaticResource InkDim}" HorizontalAlignment="Center" Margin="0,28,0,0"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Shown while a game is starting or running -->
+        <Grid x:Name="BusyCover" Background="#D90B0D12" Visibility="Collapsed">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock x:Name="BusyTitle" FontSize="52" FontWeight="Bold" HorizontalAlignment="Center"/>
+                <TextBlock Text="Press GUIDE twice, or hold START for 3 seconds, to come back here" FontSize="20"
+                           Foreground="{StaticResource InkDim}" HorizontalAlignment="Center" Margin="0,12,0,0"/>
+                <!-- Shown while START is being held (after 0.5 s) -->
+                <TextBlock x:Name="BusyHoldHint" Text="Keep holding START to quit the game" FontSize="26" FontWeight="Bold"
+                           Foreground="{StaticResource Accent}" HorizontalAlignment="Center" Margin="0,20,0,0"
+                           Visibility="Collapsed"/>
+                <TextBlock x:Name="BusyHint" FontSize="22" Foreground="{StaticResource Accent}" HorizontalAlignment="Center"
+                           TextAlignment="Center" TextWrapping="Wrap" MaxWidth="1200" Margin="0,28,0,0" Visibility="Collapsed"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

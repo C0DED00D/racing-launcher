@@ -1,0 +1,22 @@
+bin/
+obj/
+.vs/
+*.user
+# Your own setup and files: never committed.
+runtime/
+config/games.json
+config/emulators.json
+config/seats.json
+config/wheels.json
+config/boot-select.json
+art/*.png
+emulators/*
+!emulators/README.md
+games/*
+!games/README.md
+tools/*/x64/
+tools/*/x86/
+tools/wheelhub/
+tools/sdl2/
+tools/node/
+tools/mongodb/

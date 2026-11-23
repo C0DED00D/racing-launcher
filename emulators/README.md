@@ -1,0 +1,1 @@
+Portable emulator installs, one folder each (`emulators/supermodel`, `emulators/flycast`, ...). Download them from their official release pages; the paths are set in `config/emulators.json`. Nothing in this folder is committed.
