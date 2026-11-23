@@ -1,5 +1,9 @@
 # Racing Launcher
 
+> **AI-authored.** The code, scripts and documentation in this repository were written by an AI (Anthropic's
+> Claude, through Claude Code), directed by the repository owner and tested on their own cabinet. Review it before
+> you rely on it, and expect rough edges.
+
 A fullscreen arcade launcher for a home racing cabinet with **two seats** (one wheel and one screen each). Pick a
 game with the wheel. The launcher sets up the emulator for each seat, starts one copy per seat, puts each window on
 its own screen with that seat's controller and sound, and brings you back to the menu when you press **Guide twice**.
