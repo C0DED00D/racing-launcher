@@ -40,39 +40,39 @@ Tiles show **SETUP NEEDED** with the reason (which emulator or file is missing) 
 
 ## Set up
 
-### 1. Build
+**[CONFIG.md](CONFIG.md) is the full guide:** every config field, per-emulator setup, and how to find your own
+device names. The short version:
+
+### 1. Install and build
 
 Install the [.NET 10 SDK](https://dotnet.microsoft.com/download), then:
 
 ```powershell
-dotnet build src\RacingLauncher.sln -c Release
+powershell -ExecutionPolicy Bypass -File scripts\setup.ps1 -Emulators supermodel,flycast -BuildTools
 ```
+
+This creates `config\*.json` from the examples (it never overwrites yours), builds the launcher, downloads the
+emulators you name from their official GitHub releases (each checked against the SHA-256 that GitHub publishes),
+builds the helper DLLs (needs Visual Studio's C++ build tools; only Linked mode uses them), and runs the setup
+check. `scripts\install-emulators.ps1 -List` shows the emulators it can install.
 
 The launcher finds its files by looking for `config\games.json` in the folders above the exe. To use another
 folder, set `RACING_LAUNCHER_ROOT`.
 
 ### 2. Configure
 
-```powershell
-Copy-Item config\emulators.example.json config\emulators.json
-Copy-Item config\games.example.json config\games.json
-Copy-Item config\seats.example.json config\seats.json
-```
-
-- `config\emulators.json`: where each emulator lives. The examples expect one folder each under `emulators\`.
+- `scripts\list-devices.ps1` prints your controllers, audio outputs and monitors, in the form `config\seats.json`
+  wants.
 - `config\games.json`: your games. The example has one placeholder entry per runner with the fields it needs.
   Remove the ones you don't use.
 - `config\seats.json`: each seat's monitor, wheel and audio output. `devMode: true` tiles both seats on one monitor
   while you set up.
 - `art\<game id>.png` (optional): tile art, portrait 3:4 (900x1200 looks sharp on a 4K screen at 300 % scaling).
+- `scripts\check-setup.ps1` reports anything missing: emulators, game files, BIOS files, devices that don't match.
 
-### 3. Install emulators
+### 3. Emulator settings
 
-Download each emulator you need from its release page (links in `config\emulators.example.json`), check the
-published checksum, and unpack it into its folder under `emulators\`. Use portable mode where an emulator has one
-(Xenia: an empty `portable.txt` beside the exe).
-
-Then the one-time setup each emulator needs:
+The one-time setup each emulator needs:
 
 - **Supermodel:** Model 2/3 games that expect a network board even for one player work with `Network = true`,
   `SimulateNet = true` and `PortOut = PortIn` in `Config\Supermodel.ini` (the one-cabinet ring links to itself).
@@ -154,6 +154,11 @@ Optional: `tools\sdl2\SDL2.dll` (x64) lets the Flycast runner list SDL joysticks
 
 | Script | What |
 |---|---|
+| `scripts\setup.ps1` | One-time setup: configs from the examples, build, optional emulators and helper DLLs, setup check. |
+| `scripts\install-emulators.ps1` | Emulators from their official GitHub releases, SHA-256 checked (`-List`, `-All`, `-DryRun`, `-Latest`, `-Update`). |
+| `scripts\list-devices.ps1` | Controllers, audio outputs and monitors, as `seats.json` wants them. |
+| `scripts\check-setup.ps1` | Checks configs, emulators, game files, seats vs devices, the wheel hub and Windows settings. |
+| `scripts\build-wheelhub.ps1` | Publishes x360-wheel-ffb (cloned beside this folder) into `tools\wheelhub\`. |
 | `scripts\drive.ps1` | Screenshots (`shot 1\|2`) and scan-code keys (`key`, `keys`, `focus`) for testing without someone at the cabinet. |
 | `scripts\padlog.ps1` | Logs XInput slots 0 and 1 (steering, pedals, buttons) to check mappings. |
 | `scripts\xinput-press.ps1`, `xinput-axis.ps1` | Fake pad presses / axes through `xinput-inject`. |

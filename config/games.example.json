@@ -9,7 +9,6 @@
   //   rom        the game file or folder the runner needs (you supply it; nothing is included)
   //   modes      Solo (one copy on seat 1's screen) and/or Linked (one networked copy per seat, each on its own screen)
   //   args       extra command-line arguments for the emulator
-  //   env        extra environment variables
   //   emulator   which config/emulators.json entry to use, when a runner has more than one build
   //   modeHints  { "Linked": "..." }: a line shown in the menu footer for that mode
   //   wheelRange steering rotation in degrees (Logitech wheels; default from seats.json)

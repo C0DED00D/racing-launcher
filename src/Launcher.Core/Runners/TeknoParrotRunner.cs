@@ -27,7 +27,7 @@ public sealed class TeknoParrotRunner : IRunner
 
         if (string.IsNullOrWhiteSpace(game.TpProfile)) problems.Add("No tpProfile set in config/games.json.");
         else if (!File.Exists(Path.Combine(home, "UserProfiles", game.TpProfile + ".xml")))
-            problems.Add($"TeknoParrot user profile {game.TpProfile}.xml is missing (run scripts/tp-outrun-profile.ps1).");
+            problems.Add($"TeknoParrot user profile {game.TpProfile}.xml is missing: add the game in TeknoParrotUi.exe first (it writes UserProfiles\\" + game.TpProfile + ".xml).");
 
         if (string.IsNullOrWhiteSpace(game.Rom) || !Directory.Exists(config.Resolve(game.Rom)))
             problems.Add($"Game folder not found at {config.Resolve(game.Rom ?? "")}");

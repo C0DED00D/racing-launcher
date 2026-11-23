@@ -6,6 +6,7 @@
 !/.gitattributes
 !/README.md
 !/LICENSE
+!/CONFIG.md
 !/src/
 !/config/
 !/scripts/
@@ -39,6 +40,10 @@ obj/
 !/scripts/boot-select.cmd
 !/scripts/build-wheelhub.ps1
 !/scripts/pre-commit
+!/scripts/setup.ps1
+!/scripts/check-setup.ps1
+!/scripts/install-emulators.ps1
+!/scripts/list-devices.ps1
 
 # tools: our helper DLL sources only (no downloads, build tools or built binaries).
 /tools/*
